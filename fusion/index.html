@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Fusion viz</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
+		<!--
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/sha256.js"></script>
+		-->
+    <script>
+      let genes = [
+        ["NC_000009.12", 130663881, 130937675, "ABL1"],
+        ["NC_000001.11", 179049327, 179279684, "ABL2"],
+        ["NC_000014.9", 23008564, 23145614, "ACIN1"],
+        ["NC_000006.12", 167776564, 168022023, "AFDN"],
+        ["NC_000004.12", 86884606, 87191054, "AFF1"],
+        ["NC_000008.11", 107199011, 107582147, "ANGPT1"],
+        ["NC_000006.12", 156727846, 157260779, "ARID1B"],
+        ["NC_000012.12", 14203008, 14552935, "ATF7IP"],
+        ["NC_000007.14", 69548919, 70842899, "AUTS2"],
+        ["NC_000014.9", 98349702, 99328183, "BCL11B"],
+        ["NC_000018.10", 63073346, 63369778, "BCL2"],
+        ["NC_000001.11", 147491401, 147676219, "BCL9"],
+        ["NC_000022.11", 23130365, 23368037, "BCR"],
+        ["NC_000007.14", 140669334, 140974764, "BRAF"],
+        ["NC_000005.10", 813735, 942824, "BRD9"],
+        ["NC_000020.11", 33440122, 33700031, "CBFA2T2"],
+        ["NC_000016.10", 88824855, 89027156, "CBFA2T3"],
+        ["NC_000016.10", 66979147, 67151058, "CBFB"],
+        ["NC_000006.12", 138717306, 138843319, "CCDC28A"],
+        ["NC_000006.12", 41884933, 42098894, "CCND3"],
+        ["NC_000007.14", 92554921, 92895194, "CDK6"],
+        ["NC_000009.12", 21917752, 22044491, "CDKN2A"],
+        ["NC_000019.10", 33249934, 33352564, "CEBPA"],
+        ["NC_000008.11", 47686914, 47788164, "CEBPD"],
+        ["NC_000016.10", 3675054, 3930120, "CREBBP"],
+        ["NC_000023.11", 1137538, 1266170, "CRLF2"],
+        ["NC_000005.10", 150003291, 150163372, "CSF1R"],
+        ["NC_000007.14", 101765904, 102333958, "CUX1"],
+        ["NC_000010.11", 94712706, 94902914, "CYP2C19"],
+        ["NC_000013.11", 71387966, 71917192, "DACH1"],
+        ["NC_000023.11", 41283398, 41400274, "DDX3X"],
+        ["NC_000006.12", 18174169, 18314568, "DEK"],
+        ["NC_000016.10", 10878891, 10992400, "DEXI"],
+        ["NC_000004.12", 190040908, 190142287, "DUX4"],
+        ["NC_000005.10", 158466640, 159149780, "EBF1"],
+        ["NC_000019.10", 18392663, 18572127, "ELL"],
+        ["NC_000007.14", 36802906, 37499326, "ELMO1"],
+        ["NC_000007.14", 73977789, 74119907, "ELN"],
+        ["NC_000022.11", 41042302, 41230083, "EP300"],
+        ["NC_000019.10", 11327205, 11434342, "EPOR"],
+        ["NC_000021.9", 38317261, 38711780, "ERG"],
+        ["NC_000012.12", 11599854, 11945402, "ETV6"],
+        ["NC_000022.11", 29218009, 29350525, "EWSR1"],
+        ["NC_000012.12", 132440455, 132635188, "FBRSL1"],
+        ["NC_000002.12", 218931087, 219035657, "FEV"],
+        ["NC_000011.10", 128636535, 128863267, "FLI1"],
+        ["NC_000013.11", 27953274, 28150592, "FLT3"],
+        ["NC_000003.12", 70904714, 71633989, "FOXP1"],
+        ["NC_000016.10", 31130110, 31244871, "FUS"],
+        ["NC_000023.11", 48736574, 48844311, "GATA1"],
+        ["NC_000003.12", 128429422, 128587620, "GATA2"],
+        ["NC_000016.10", 4264761, 4389595, "GLIS2"],
+        ["NC_000018.10", 46054332, 46178333, "HAUS1"],
+        ["NC_000017.11", 55214960, 55375065, "HLF"],
+        ["NC_000005.10", 179564178, 179673721, "HNRNPH1"],
+        ["NC_000019.10", 41212486, 41357906, "HNRNPUL1"],
+        ["NC_000007.14", 27150421, 27256520, "HOTTIP"],
+        ["NC_000007.14", 27120591, 27230261, "HOXA10"],
+        ["NC_000007.14", 27131157, 27237759, "HOXA11"],
+        ["NC_000007.14", 27146880, 27250106, "HOXA13"],
+        ["NC_000007.14", 27112438, 27215530, "HOXA9"],
+        ["NC_000017.11", 48571156, 48676473, "HOXB9"],
+        ["NC_000014.9", 105536437, 106929844, "IGH"],
+        ["NC_000007.14", 50144712, 50455101, "IKZF1"],
+        ["NC_000009.12", 4935245, 5179948, "JAK2"],
+        ["NC_000008.11", 41879479, 42101988, "KAT6A"],
+        ["NC_000012.12", 230057, 439455, "KDM5A"],
+        ["NC_000011.10", 118381022, 118576824, "KMT2A"],
+        ["NC_000010.11", 90995808, 91112159, "LINC00502"],
+        ["NC_000011.10", 8174304, 8318635, "LMO1"],
+        ["NC_000011.10", 33808576, 33942289, "LMO2"],
+        ["NC_000003.12", 100351193, 100506326, "LNP1"],
+        ["NC_000008.11", 55829827, 56062447, "LYN"],
+        ["NC_000003.12", 152194321, 152515780, "MBNL1"],
+        ["NC_000003.12", 168914701, 169713775, "MECOM"],
+        ["NC_000001.11", 156410579, 156550842, "MEF2D"],
+        ["NC_000022.11", 40360281, 40686719, "MKL1"],
+        ["NC_000003.12", 158521164, 158656460, "MLF1"],
+        ["NC_000019.10", 6160381, 6329948, "MLLT1"],
+        ["NC_000010.11", 21484172, 21793630, "MLLT10"],
+        ["NC_000001.11", 151009675, 151118497, "MLLT11"],
+        ["NC_000009.12", 20291665, 20672543, "MLLT3"],
+        ["NC_000006.12", 167776922, 168022023, "MLLT4"],
+        ["NC_000017.11", 38655273, 38779795, "MLLT6"],
+        ["NC_000007.14", 156905956, 157060653, "MNX1"],
+        ["NC_000006.12", 135131315, 135269173, "MYB"],
+        ["NC_000008.11", 127686069, 127791434, "MYC"],
+        ["NC_000016.10", 15664913, 15857028, "MYH11"],
+        ["NC_000012.12", 75994892, 76134958, "NAP1L1"],
+        ["NC_000008.11", 70059768, 70453827, "NCOA2"],
+        ["NC_000020.11", 46010985, 46139941, "NCOA5"],
+        ["NC_000017.11", 15980094, 16265560, "NCOR1"],
+        ["NC_000019.10", 12945770, 13148796, "NFIX"],
+        ["NC_000005.10", 36826759, 37115824, "NIPBL"],
+        ["NC_000014.9", 36466397, 36570225, "NKX2-1"],
+        ["NC_000020.11", 32393059, 32635333, "NOL4L"],
+        ["NC_000005.10", 171337648, 171460884, "NPM1"],
+        ["NC_000005.10", 177083025, 177395741, "NSD1"],
+        ["NC_000013.11", 47987567, 48097146, "NUDT15"],
+        ["NC_000009.12", 131075561, 131284670, "NUP214"],
+        ["NC_000011.10", 3625010, 3912733, "NUP98"],
+        ["NC_000015.10", 34293315, 34407737, "NUTM1"],
+        ["NC_000023.11", 1412572, 1587144, "P2RY8"],
+        ["NC_000009.12", 36783275, 37084479, "PAX5"],
+        ["NC_000001.11", 164509360, 164901830, "PBX1"],
+        ["NC_000004.12", 54179097, 54348245, "PDGFRA"],
+        ["NC_000005.10", 150063839, 150205884, "PDGFRB"],
+        ["NC_000011.10", 85907171, 86119881, "PICALM"],
+        ["NC_000015.10", 73944673, 74097819, "PML"],
+        ["NC_000001.11", 3018497, 3488621, "PRDM16"],
+        ["NC_000002.12", 108669446, 108835811, "RANBP2"],
+        ["NC_000004.12", 98211376, 98493861, "RAP1GDS1"],
+        ["NC_000001.11", 110289323, 110396681, "RBM15"],
+        ["NC_000001.11", 167575034, 167758692, "RCSD1"],
+        ["NC_000003.12", 184249098, 184359054, "RPN1"],
+        ["NC_000010.11", 90821952, 90958555, "RPP30"],
+        ["NC_000021.9", 34737801, 35099334, "RUNX1"],
+        ["NC_000008.11", 91904967, 92186563, "RUNX1T1"],
+        ["NC_000023.11", 119565724, 119743370, "SEPT6"],
+        ["NC_000009.12", 128633655, 128746396, "SET"],
+        ["NC_000014.9", 36423288, 36563785, "SFTA3"],
+        ["NC_000009.12", 1965042, 2243624, "SMARCA2"],
+        ["NC_000011.10", 47327658, 47428109, "SPI1"],
+        ["NC_000005.10", 81367360, 81801253, "SSBP2"],
+        ["NC_000023.11", 123910560, 124152656, "STAG2"],
+        ["NC_000001.11", 47183569, 47364147, "STIL"],
+        ["NC_000017.11", 35759484, 35897242, "TAF15"],
+        ["NC_000001.11", 47166290, 47282266, "TAL1"],
+        ["NC_000009.12", 105612457, 105713112, "TAL2"],
+        ["NC_000020.11", 13339389, 13688936, "TASP1"],
+        ["NC_000019.10", 1559290, 1702334, "TCF3"],
+        ["NC_000014.9", 22497506, 22602132, "TCRA"],
+        ["NC_000007.14", 142249011, 142863287, "TCRB"],
+        ["NC_000010.11", 101081304, 101187789, "TLX1"],
+        ["NC_000005.10", 171259284, 171362134, "TLX3"],
+        ["NC_000006.12", 18078311, 18205143, "TPMT"],
+        ["NC_000014.9", 22497506, 22602132, "TRA"],
+        ["NC_000007.14", 142299011, 142813287, "TRB"],
+        ["NC_000019.10", 10300528, 10430572, "TYK2"],
+        ["NC_000017.11", 44155033, 44271626, "UBTF"],
+        ["NC_000011.10", 119305215, 119431726, "USP2"],
+        ["NC_000007.14", 6038790, 6211564, "USP42"],
+        ["NC_000023.11", 40947408, 41286579, "USP9X"],
+        ["NC_000007.14", 138993520, 139159720, "ZC3HAV1"],
+        ["NC_000009.12", 37070164, 37408149, "ZCCHC7"],
+        ["NC_000002.12", 144334375, 144570391, "ZEB2"],
+        ["NC_000001.11", 33206307, 33350720, "ZNF362"],
+        ["NC_000012.12", 6616477, 6739572, "ZNF384"],
+        ["NC_000018.10", 25011924, 25402250, "ZNF521"],
+        ["NC_000009.12", 113826282, 114106595, "ZNF618"]
+      ];
+      let hg38 = {
+        "1": ["NC_000001.11", 248956422],
+        "2": ["NC_000002.12", 242193529],
+        "3": ["NC_000003.12", 198295559],
+        "4": ["NC_000004.12", 190214555],
+        "5": ["NC_000005.10", 181538259],
+        "6": ["NC_000006.12", 170805979],
+        "7": ["NC_000007.14", 159345973],
+        "8": ["NC_000008.11", 145138636],
+        "9": ["NC_000009.12", 138394717],
+        "10": ["NC_000010.11", 133797422],
+        "11": ["NC_000011.10", 135086622],
+        "12": ["NC_000012.12", 133275309],
+        "13": ["NC_000013.11", 114364328],
+        "14": ["NC_000014.9", 107043718],
+        "15": ["NC_000015.10", 101991189],
+        "16": ["NC_000016.10", 90338345],
+        "17": ["NC_000017.11", 83257441],
+        "18": ["NC_000018.10", 80373285],
+        "19": ["NC_000019.10", 58617616],
+        "20": ["NC_000020.11", 64444167],
+        "21": ["NC_000021.9", 46709983],
+        "22": ["NC_000022.11", 50818468],
+        "X": ["NC_000023.11", 156040895],
+        "Y": ["NC_000024.10", 57227415],
+        "MT": ["NC_012920.1", 16569]
+      }
+      let chrom_lengths = [];
+      let chrom_names = [];
+      let chrom_lookup = {};
+      for(nm in hg38) {
+        chrom_lookup[nm] = chrom_names.length;
+        chrom_lookup["chr"+nm] = chrom_names.length;
+        chrom_lookup[hg38[nm][0]] = chrom_names.length;
+        chrom_names.push(nm);
+        chrom_lengths.push(hg38[nm][1]);
+      }
+      let gene_lookup = {};
+      for(let g = 0; g < genes.length; g++) {
+        gene_lookup[genes[g][3]] = [genes[g][0], genes[g][1], genes[g][2]];
+      }
+
+      // https://stackoverflow.com/questions/3590058/does-html5-allow-drag-drop-upload-of-folders-or-a-folder-tree
+      // https://codepen.io/cagerattler/pen/OZqdBy
+      function getFilesDataTransferItems(dataTransferItems) {
+        function traverseFileTreePromise(item, path = "", folder) {
+          return new Promise(resolve => {
+            if (item.isFile) {
+              item.file(file => {
+                file.filepath = (path || "") + file.name;
+                folder.push(file);
+                resolve(file);
+              });
+            } else if (item.isDirectory) {
+              let dirReader = item.createReader();
+              dirReader.readEntries(entries => {
+                let entriesPromises = [];
+                let subfolder = [];
+                folder.push({ name: item.name, filepath: (path || "") + item.name, subfolder: subfolder });
+                for (let entr of entries)
+                  entriesPromises.push(
+                    traverseFileTreePromise(entr, (path || "") + item.name + "/", subfolder)
+                  );
+                resolve(Promise.all(entriesPromises));
+              });
+            }
+          });
+        }
+        let files = [];
+        return new Promise((resolve, reject) => {
+          let entriesPromises = [];
+          for (let it of dataTransferItems)
+            entriesPromises.push(
+              traverseFileTreePromise(it.webkitGetAsEntry(), null, files)
+            );
+          Promise.all(entriesPromises).then(entries => {
+            resolve(files);
+          });
+        });
+      }
+
+      function buttonize(elem) {
+        elem.style.borderRadius = "10px";
+        elem.style.border = "1px solid #000000";
+        elem.style.padding = "5px";
+        elem.style.margin = "5px";
+        elem.style.display = "inline-block";
+        elem.style.fontFamily = "monospace";
+        elem.style.cursor = "pointer";
+      }
+
+      let ControlPanel = function(elem, gb) {
+        this.root = elem;
+
+        let ll_btn = document.createElement("DIV");
+        ll_btn.innerText = "<<";
+        buttonize(ll_btn);
+        ll_btn.addEventListener("click", function(e){gb.shift(-0.5)});
+        this.root.appendChild(ll_btn);
+
+        let l_btn = document.createElement("DIV");
+        l_btn.innerText = "<";
+        buttonize(l_btn);
+        l_btn.addEventListener("click", function(e){gb.shift(-0.1)});
+        this.root.appendChild(l_btn);
+
+        let in_btn = document.createElement("DIV");
+        in_btn.innerText = "+";
+        buttonize(in_btn);
+        in_btn.addEventListener("click", function(e){gb.zoom(2)});
+        this.root.appendChild(in_btn);
+
+        let out_btn = document.createElement("DIV");
+        out_btn.innerText = "-";
+        buttonize(out_btn);
+        out_btn.addEventListener("click", function(e){gb.zoom(0.5)});
+        this.root.appendChild(out_btn);
+
+        let inin_btn = document.createElement("DIV");
+        inin_btn.innerText = "++";
+        buttonize(inin_btn);
+        inin_btn.addEventListener("click", function(e){gb.zoom(10)});
+        this.root.appendChild(inin_btn);
+
+        let outout_btn = document.createElement("DIV");
+        outout_btn.innerText = "--";
+        buttonize(outout_btn);
+        outout_btn.addEventListener("click", function(e){gb.zoom(0.1)});
+        this.root.appendChild(outout_btn);
+
+        let r_btn = document.createElement("DIV");
+        r_btn.innerText = ">";
+        buttonize(r_btn);
+        r_btn.addEventListener("click", function(e){gb.shift(0.1)});
+        this.root.appendChild(r_btn);
+
+        let rr_btn = document.createElement("DIV");
+        rr_btn.innerText = ">>";
+        buttonize(rr_btn);
+        rr_btn.addEventListener("click", function(e){gb.shift(0.5)});
+        this.root.appendChild(rr_btn);
+      }
+
+      let GenomeBrowser = function(elem, ctrlelem) {
+        this.root = elem;
+        this.canvas = document.createElement("CANVAS");
+        this.w = 600;
+        this.h = 800;
+        this.canvas.setAttribute("width", this.w*2);
+        this.canvas.setAttribute("height", this.h*2);
+        this.canvas.style.width = this.w+"px";
+        this.canvas.style.height = this.h+"px";
+        this.ctx = this.canvas.getContext("2d");
+        this.root.appendChild(this.canvas);
+        this.ctrl = new ControlPanel(ctrlelem, this);
+        this.chrom = 0;
+        this.st = 0;
+        this.en = 100000;
+        this.bars = [[]];
+        this.rec = function(coord, dim, color, direction) {
+          this.ctx.fillStyle = color;
+          this.ctx.fillRect(parseInt(coord[0])*2+0.5, parseInt(coord[1])*2+0.5, parseInt(dim[0]*2), parseInt(dim[1]*2));
+          if(dim[0] > 5) {
+            this.ctx.beginPath();
+            this.ctx.strokeStyle = "white";
+            this.ctx.lineWidth = 2;
+            if(direction == 'l') {
+              this.ctx.moveTo(parseInt(coord[0])*2+0.5+4, parseInt(coord[1])*2+0.5+1);
+              this.ctx.lineTo(parseInt(coord[0])*2+0.5, parseInt(coord[1])*2+0.5+4+1);
+              this.ctx.lineTo(parseInt(coord[0])*2+0.5+4, parseInt(coord[1])*2+0.5+9+1);
+            } else if(direction == 'r') {
+              this.ctx.moveTo(parseInt(coord[0])*2+0.5+parseInt(dim[0]*2)-4, parseInt(coord[1])*2+0.5+1);
+              this.ctx.lineTo(parseInt(coord[0])*2+0.5+parseInt(dim[0]*2), parseInt(coord[1])*2+0.5+4+1);
+              this.ctx.lineTo(parseInt(coord[0])*2+0.5+parseInt(dim[0]*2)-4, parseInt(coord[1])*2+0.5+9+1);
+            }
+            this.ctx.stroke();
+          }
+        }
+        this.txt = function(coord, text, font_size, color) {
+          this.ctx.font = parseInt(font_size*2)+"px Monospace";
+          this.ctx.fillStyle = color;
+          this.ctx.fillText(text, parseInt(coord[0])*2+0.5, parseInt(coord[1])*2+0.5+font_size);
+        }
+        this.nav = function(chrom, st, en) {
+          if(!(chrom in chrom_lookup)) {
+            console.error("'" + chrom + "' not a recognized chromosome name or accession");
+          }
+          this.chrom = chrom_lookup[chrom];
+          this.st = st;
+          this.en = en;
+          this.xrange = this.en - this.st;
+          this.npp = this.xrange / this.root.offsetWidth; // nucleotides per pixel
+          this.remove_overlap_filter();
+          this.render();
+        }
+        this.shift = function(fraction) {
+          let nt_to_move = parseInt(this.xrange * fraction)+1;
+          if(this.st + nt_to_move < 0) {
+            this.st = 0;
+            this.en = this.xrange;
+          } else if(this.en + nt_to_move >= chrom_lengths[this.chrom]) {
+            this.en = chrom_lengths[this.chrom];
+            this.st = this.en - this.xrange;
+          } else {
+            this.st += nt_to_move;
+            this.en += nt_to_move;
+          }
+          show(paf);
+        }
+        this.zoom = function(fraction) {
+          let new_range = parseInt(this.xrange / fraction)+1;
+          let middle = this.st + parseInt((this.en - this.st)/2);
+          let half = parseInt(new_range/2);
+          if(middle - half < 0) {
+            this.st = 0;
+            this.en = new_range;
+          } else if(this.en + half >= chrom_lengths[this.chrom]) {
+            this.en = chrom_lengths[this.chrom];
+            this.st = this.en - new_range;
+          } else {
+            this.st = middle - half;
+            this.en = middle + half;
+          }
+          this.xrange = new_range;
+          this.npp = this.xrange / this.root.offsetWidth; // nucleotides per pixel
+          show(paf);
+        }
+        this.render = function() {
+          this.covg = Array(this.en-this.st+1).fill(0);
+          this.ctx.clearRect(0, 0, this.w*2, this.h*2); // empty it
+          this.bars = [[]];
+
+          // draw position title
+          this.txt([0, 5], "Chromosome " + chrom_names[this.chrom] + ": " + this.st + " - " + this.en, 15, "#000000");
+
+          // draw coordinate axis
+          this.rec([0, 170], [600, 3], "#BBBBBB");
+
+          // compute ticks
+          let tick_spacing = 1000000000;
+          let unit = "Gbp";
+          while(this.xrange / tick_spacing < 3) { // we as few ticks as possible as long as it's at least 3
+            if((tick_spacing+"").substring(0,1) == "5") tick_spacing /= 5;
+            else tick_spacing /= 2;
+          }
+          //console.log("tick spacing will be " + tick_spacing);
+          for(let i = parseInt(this.st/tick_spacing)+1; i <= parseInt((this.en-1)/tick_spacing); i++) {
+            //console.log("tick at " + (i*tick_spacing));
+            this.rec([parseInt((i*tick_spacing - this.st) / this.npp)-1, 160], [3, 10], "#BBBBBB");
+            this.txt([(parseInt((i*tick_spacing - this.st) / this.npp)-1) - 20, 150], (i*tick_spacing)+"", 8, "#999999");
+          }
+        }
+        this.add = function(aln, color, fixed_row) {
+          if(!this.overlaps_window(aln)) return false;
+          // find a y position such that it doesn't overlap any other read bars
+          let overlaps = true;
+          let x = parseInt((aln.ts - this.st < 0 ? 0 : aln.ts - this.st) / this.npp)-1;
+          let w = Math.max((Math.min(aln.te, this.en) - Math.max(aln.ts, this.st)) / this.npp, 1);
+          let y = 0;
+
+          let row = 0;
+          if(fixed_row != null) {
+            while(this.bars.length <= fixed_row) {
+              this.bars.push([]);
+            }
+            row = fixed_row;
+            y = (180+10*row);
+          } else {
+            while(overlaps) {
+              y = (180+10*row);
+              overlaps = false;
+              for(let b = 0; b < this.bars[row].length; b++) {
+                let rect2 = this.bars[row][b];
+                overlaps = !(x+w + 2 < rect2[0] || x - 2 > rect2[0]+rect2[1]);
+                if(overlaps) {
+                  row++;
+                  if(this.bars.length <= row) {
+                    this.bars.push([]);
+                  }
+                  break;
+                }
+              }
+            }
+          }
+          this.rec([x, y], [w, 5], color != null ? color : "#999999", (aln.rv ? 'l' : 'r'));
+          this.bars[row].push([x,w]);
+          for(let i = aln.ts; i < aln.te; i++) {
+            if(i >= this.st && i <= this.en)
+              this.covg[i-this.st]++;
+          }
+          return true;
+        }
+        this.plot_covg = function() {
+          let x = 0;
+          let y = 40;
+          let h = 100;
+          this.ctx.beginPath();
+          this.ctx.strokeStyle = "black";
+          this.ctx.lineWidth = 1;
+          let max_y = Math.max.apply(null, this.covg)
+          this.ctx.moveTo(x*2, (y + h - this.covg[0]*h/max_y)*2);
+          for(let i = 1; i < this.covg.length; i++) {
+            this.ctx.lineTo((x+i*this.w/this.covg.length)*2, (y + h - this.covg[i]*h/max_y)*2);
+          }
+          this.ctx.stroke();
+        }
+        this.overlaps_window = function(aln) {
+          //console.log(this.chrom, this.st, this.en,  aln.t, aln.ts, aln.te);
+          if(!(aln.t in chrom_lookup)) {
+            console.error("'" + aln.t + "' not a recognized chromosome name or accession");
+            return false;
+          }
+          let t = chrom_lookup[aln.t];
+          if(t != this.chrom || aln.te <= this.st || aln.ts >= this.en) { // does not overlap the target window
+            return false;
+          }
+          //return this.overlaps_site(aln);
+          return true;
+        }
+        this.overlaps_site = function(aln) {
+          if(!(aln.t in chrom_lookup)) {
+            console.error("'" + aln.t + "' not a recognized chromosome name or accession");
+            return false;
+          }
+          let t = chrom_lookup[aln.t];
+          if(this.overlap_filter != null && (t != this.chrom || aln.ts > this.overlap_filter[1] + this.overlap_filter[2] || aln.te < this.overlap_filter[1] - this.overlap_filter[2])) {
+            return false;
+          }
+          return this.overlap_filter != null;
+        }
+        this.add_overlap_filter = function(chrom, pos, window_size) {
+          this.overlap_filter = [chrom, pos, window_size];
+        }
+        this.remove_overlap_filter = function() {
+          this.overlap_filter = null;
+        }
+      }
+
+      function setup() {
+        var dropArea = document.getElementById("dropArea");
+        dropArea.addEventListener("dragover", function(e) {
+            e = e || event;
+            e.preventDefault();
+            e.target.style.borderColor = "#44CC55";
+          },
+          false
+        );
+        dropArea.addEventListener("dragleave", function(e) {
+            e = e || event;
+            e.preventDefault();
+            e.target.style.borderColor = "black";
+          },
+          false
+        );
+        dropArea.addEventListener("drop", function(e) {
+          e = e || event;
+          e.preventDefault();
+					e.stopImmediatePropagation();
+          let items = e.dataTransfer.items;
+          getFilesDataTransferItems(items).then(function(dir) {
+            process_paf(dir[0]);
+          }, function(err) {
+            console.error(err);
+          });
+
+        }, false);
+        gbl = new GenomeBrowser(document.getElementById("leftbox"), document.getElementById("leftctrl"), hg38);
+        gbr = new GenomeBrowser(document.getElementById("rightbox"), document.getElementById("rightctrl"), hg38);
+
+        document.getElementById("leftgo").addEventListener("click", function(e) {
+          nav(document.getElementById("leftloc").value, null);
+          show(paf);
+        });
+
+        document.getElementById("rightgo").addEventListener("click", function(e) {
+          nav(null, document.getElementById("rightloc").value);
+          show(paf);
+        });
+      }
+
+      function nav(l, r) {
+        let pos = [l, r];
+        for(let i = 0; i < 2; i++) {
+          let p = pos[i];
+          if(p == null) continue;
+          let gb = i == 0 ? gbl : gbr;
+          if(p.indexOf(":") > -1) {
+            let c = p.substring(0, p.indexOf(":"));
+            let s = parseInt(p.subslring(p.indexOf(":")+1, p.indexOf("-")));
+            let e = parseInt(p.substring(p.indexOf("-")+1));
+            gb.nav(c, s, e);
+          }
+          else {
+            if(p in gene_lookup) {
+              gb.nav(gene_lookup[p][0], gene_lookup[p][1], gene_lookup[p][2]);
+            } else {
+              console.error("'" + p + "' not a known gene or position (ex. 3:45000000-46000000)");
+            }
+          }
+        }
+      }
+
+      function process_paf(paf_file) {
+        console.log(paf_file);
+        let da = document.getElementById("dropArea");
+        if(!paf_file) {
+          da.innerHTML = "The file you dropped isn't quite right, please drop ONE PAF file";
+          da.style.borderColor = "red";
+          return;
+        }
+        let io = document.getElementById("dropbox");
+        io.style.border = "1px solid #AAAAAA";
+        io.style.padding = "10px";
+        io.innerHTML = "Loading...";
+
+        let fr = new FileReader();
+        fr.addEventListener("load", function(e) {
+          io.parentNode.removeChild(io);
+          document.getElementById("browser").style.display = "block";
+          let contents = e.target.result;
+          paf = new PAF(contents);
+
+          // have to call nav() first to move the window and reset the browser, then send it every line from the PAF...
+
+          //gbl.nav("11", 3675010, 3797554, "NUP98");
+          //gbr.nav("5", 177131798, 177300213, "NSD1");
+          let l = document.getElementById("leftloc").value;
+          let r = document.getElementById("rightloc").value;
+          nav(l, r);
+
+          show(paf);
+        }, false);
+        fr.readAsText(paf_file);
+      }
+
+      function err(msg) {
+        console.error(msg);
+      }
+
+      let PAF = function(file_contents) {
+        this.f = file_contents;
+        this.idx = 0;
+        this.next = function() {
+          if(this.idx >= this.f.length) return null;
+          let st = this.idx;
+          while(this.f.charAt(this.idx) != "\n") {
+            this.idx++;
+          }
+          let paf_line = this.f.substring(st, this.idx);
+          this.idx++;
+          return new Aln(paf_line);
+        }
+        this.reset = function() {
+          this.idx = 0;
+        }
+      }
+
+      let Aln = function(paf_line) {
+        let parts = paf_line.split("\t");
+        this.q = parts[0];
+        this.ql = parseInt(parts[1]);
+        this.qs = parseInt(parts[2]);
+        this.qe = parseInt(parts[3]);
+        this.rv = parts[4] == "-";
+        this.t = parts[5];
+        this.tl = parseInt(parts[6]);
+        this.ts = parseInt(parts[7]);
+        this.te = parseInt(parts[8]);
+        this.ml = parseInt(parts[9]); // # matches
+        this.al = parseInt(parts[10]); // total alignment length
+        // after this is flags
+      }
+
+      function show(paf) {
+        gbl.render();
+        gbr.render();
+
+        paf.reset();
+        let aln = paf.next();
+        let reads = {};
+        let aln_ct = 0;
+        while(aln != null) {
+          if(gbl.overlaps_window(aln) || gbr.overlaps_window(aln)) {
+            if(!(aln.q in reads))
+              reads[aln.q] = [[], []];
+            if(gbl.overlaps_window(aln))
+              reads[aln.q][0].push(aln);
+            if(gbr.overlaps_window(aln))
+              reads[aln.q][1].push(aln);
+          }
+          aln = paf.next();
+          aln_ct++;
+        }
+        // remove duplex parts
+        for(r in reads) {
+          let subreads = r.split(';');
+          if(subreads.length > 1)
+            for(let i = 0; i < subreads.length; i++)
+              delete reads[subreads[i]];
+        }
+        console.log(aln_ct, "alignments");
+        let fusion_ct = 0;
+        let left_split_reads = 0;
+        let right_split_reads = 0;
+        for(r in reads) {
+          let left_bar = null;
+          let right_bar = null;
+          if(reads[r][0].length > 0 && reads[r][1].length > 0) { // fusion read
+            fusion_ct++;
+            for(let i = 0; i < reads[r][0].length; i++) {
+              let aln = reads[r][0][i];
+              left_bar = gbl.add(aln, "blue", fusion_ct);
+            }
+            for(let i = 0; i < reads[r][1].length; i++) {
+              for(let i = this.st; i <= this.en; i++) {
+                covg[i]++;
+              }
+              let aln = reads[r][1][i];
+              right_bar = gbr.add(aln, "blue", fusion_ct);
+            }
+          }
+        }
+        for(r in reads) {
+          if(reads[r][0].length > 1) {
+            left_split_reads++;
+            for(let i = 0; i < reads[r][0].length; i++) {
+              gbl.add(reads[r][0][i], "red", fusion_ct+left_split_reads);
+            }
+          }
+          if(reads[r][1].length > 1) {
+            right_split_reads++;
+            for(let i = 0; i < reads[r][1].length; i++) {
+              gbr.add(reads[r][1][i], "orange", fusion_ct+right_split_reads);
+            }
+          }
+        }
+        let rct = 0;
+        for(r in reads) {
+          rct++;
+          if(reads[r][0].length == 0 || reads[r][1].length == 0) {
+            for(let i = 0; i < reads[r][0].length; i++) {
+              let aln = reads[r][0][i];
+              if(gbl.overlaps_site(aln))
+                gbl.add(aln, "#FFAAAA");
+              else
+                gbl.add(aln, "#CCCCCC");
+            }
+            for(let i = 0; i < reads[r][1].length; i++) {
+              let aln = reads[r][1][i];
+              if(gbr.overlaps_site(aln))
+                gbr.add(aln, "#FFDDAA");
+              else
+                gbr.add(aln, "#CCCCCC");
+            }
+          }
+        }
+        console.log("rendered", rct, "reads", "--", fusion_ct, "show fusion --", left_split_reads, "split left --", right_split_reads, "split right");
+        gbl.plot_covg();
+        gbr.plot_covg();
+      }
+
+      addEventListener("DOMContentLoaded", () => {
+        setup();
+      });
+
+      let paf = null; // global PAF object
+      let gbl = null; // genome browser
+      let gbr = null; // genome browser
+
+    </script>
+
+    <style>
+      .dropArea{
+        height: 200px;
+        width: 200px;
+        padding: 10px;
+        border: 4px dashed black;
+      }
+      .bigHeader {
+        color: #888888;
+        font-weight: bold;
+        padding: 20px;
+      }
+      body {
+        font-family: monospace;
+      }
+      .main {
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1 class="bigHeader">Fusion visualization</h1>
+    <div class="main">
+
+      <div id="dropbox">
+        <div style="font-weight:bold; font-size:20px">Start here:</div>
+        <div id="dropArea" class="dropArea">
+          Drag and drop a PAF file into this box
+        </div>
+      </div>
+
+      <div id="browser" style="display:none">
+        Split/dual mapped reads are highlighted if multiple alignments are shown on the <a style='color:red'>Left</a>, <a style='color:orange'>Right</a>, or <a style='color:blue'>Both</a>.
+        <br/>
+        <br/>
+        <div style="display:inline-block; width:600px; height:800px">
+          <div><input type='text' id="leftloc" value="DUX4"/> <input type="button" value="Go" id="leftgo"/></div>
+          <div id="leftctrl"></div>
+          <div id="leftbox" style="width:100%; height:100%; position:relative"></div>
+        </div>
+        <div style="display:inline-block; width:600px; height:800px">
+          <div><input type='text' id="rightloc" value="IGH"/> <input type="button" value="Go" id="rightgo"/></div>
+          <div id="rightctrl"></div>
+          <div id="rightbox" style="width:100%; height:100%; position:relative"></div>
+        </div>
+      </div>
+
+    </div>
+  </body>
+
+</html>
