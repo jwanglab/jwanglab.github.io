@@ -403,7 +403,6 @@
           ["NC_060936.1", 6626830, 6749141, "ZNF384"],
           ["NC_060942.1", 25206103, 25596828, "ZNF521"],
           ["NC_060933.1", 126024864, 126305256, "ZNF618"],
-
           ["NC_060934.1", 35205414, 35291554, "CREM"]
         ];
         this.gene_lookup = {};
@@ -700,6 +699,27 @@
             this.ctx.lineTo((x+i*this.w/this.covg.length)*2, (y + h - this.covg[i]*h/max_y)*2);
           }
           this.ctx.stroke();
+
+          // y axis
+          // draw transparent mask over part of the plot where the axis will be
+          this.ctx.globalAlpha = 0.8;
+          this.ctx.fillStyle = "white";
+          this.ctx.fillRect(0, y*2-10, 60, h*2+20);
+          this.ctx.globalAlpha = 1.0;
+
+          this.ctx.fillStyle = "black";
+          this.ctx.beginPath();
+          this.ctx.moveTo(0, (y+h)*2);
+          this.ctx.lineTo(0, y*2);
+          this.ctx.stroke();
+          let yticks = [0, max_y, parseInt(max_y/2)];
+          for(let i in yticks) {
+            this.ctx.beginPath();
+            this.ctx.moveTo(0, (y+h-yticks[i]*h/max_y)*2);
+            this.ctx.lineTo(20, (y+h-yticks[i]*h/max_y)*2);
+            this.ctx.stroke();
+            this.ctx.fillText(""+yticks[i], 25, (y+h-yticks[i]*h/max_y)*2+5);
+          }
         }
         this.overlaps_window = function(aln) {
           //console.log(this.chrom, this.st, this.en,  aln.t, aln.ts, aln.te);
