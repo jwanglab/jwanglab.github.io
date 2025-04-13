@@ -844,11 +844,11 @@
         this.f = file_contents;
         this.idx = 0;
         this.next = function() {
-          if(this.idx >= this.f.length) return null;
           let st = this.idx;
-          while(this.f.charAt(this.idx) != "\n") {
+          while(this.f.charAt(this.idx) != "\n" && this.idx < this.f.length) {
             this.idx++;
           }
+          if(this.idx >= this.f.length) return null;
           let paf_line = this.f.substring(st, this.idx);
           this.idx++;
           return new Aln(paf_line);
