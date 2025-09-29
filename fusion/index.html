@@ -928,13 +928,13 @@
           }
         }
         for(r in reads) {
-          if(reads[r][0].length > 1) {
+          if(reads[r][1].length == 0 && reads[r][0].length > 1) {
             left_split_reads++;
             for(let i = 0; i < reads[r][0].length; i++) {
               gbl.add(reads[r][0][i], "red", fusion_ct+left_split_reads);
             }
           }
-          if(reads[r][1].length > 1) {
+          if(reads[r][0].length == 0 && reads[r][1].length > 1) {
             right_split_reads++;
             for(let i = 0; i < reads[r][1].length; i++) {
               gbr.add(reads[r][1][i], "orange", fusion_ct+right_split_reads);
@@ -944,7 +944,7 @@
         let rct = 0;
         for(r in reads) {
           rct++;
-          if(reads[r][0].length == 0 || reads[r][1].length == 0) {
+          if((reads[r][0].length == 0 && reads[r][1].length == 1) || (reads[r][0].length == 1 && reads[r][1].length == 0)) {
             for(let i = 0; i < reads[r][0].length; i++) {
               let aln = reads[r][0][i];
               if(gbl.overlaps_site(aln))
